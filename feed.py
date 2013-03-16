@@ -12,28 +12,19 @@ class Feed(object):
 
         feed = feedparser.parse(feed_link)
         self.title = feed['feed'].get('title')
-        self.updated = time.time()
 
-    def get_items(self):
+    def items_after_id(self, seek_id):
         feed = feedparser.parse(self.link)
 
         new_items = [Item(it, self.title, self.link) for it in feed['items']]
 
-        if self.items == []:
-            self.items = new_items
+        if seek_id is None:
             return new_items
 
         try:
-            overlap = new_items.index(self.items[0])
+            overlap = new_items.index(seek_id)
             new_items = new_items[:overlap]
         except ValueError:
             pass
 
-        new_items.extend(self.items)
-        self.items = new_items
-
-        if len(self.items) > MAX_ITEMS:
-            self.items = self.items[:MAX_ITEMS]
-
-        self.updated = time.time()
-        return self.items
+        return new_items

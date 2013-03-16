@@ -2,7 +2,9 @@ from calendar import timegm
 
 
 class Item(object):
-    def __init__(self, item_dict):
+    def __init__(self, item_dict, feed_name, feed_link):
+        self.feed_name = feed_name
+        self.feed_link = feed_link
         self.date = timegm(item_dict['published_parsed'])
         self.title = item_dict['title']
         self.content = item_dict['content'][0]['value']

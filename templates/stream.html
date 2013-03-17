@@ -1,15 +1,50 @@
-<html>
-<head>
-</head>
-<body>
+{% extends "base.html" %}
+{% block head %}
+<style>
+.rss-item {
+  padding-left: 10px;
+  margin-bottom: 10px;
+  border: 1px solid black;
+}
+</style>
+{% endblock %}
+{% block title %}Stream{% endblock %}
+{% block content %}
+<div class="span3">
+  <div class="well sidebar-nav">
+    <ul class="nav nav-list">
+      <li class="nav-header">Sidebar</li>
+      <li class="active"><a href="#">Link</a></li>
+      <li><a href="#">Link</a></li>
+      <li><a href="#">Link</a></li>
+      <li><a href="#">Link</a></li>
+      <li class="nav-header">Sidebar</li>
+      <li><a href="#">Link</a></li>
+      <li><a href="#">Link</a></li>
+      <li><a href="#">Link</a></li>
+      <li><a href="#">Link</a></li>
+      <li><a href="#">Link</a></li>
+      <li><a href="#">Link</a></li>
+      <li class="nav-header">Sidebar</li>
+      <li><a href="#">Link</a></li>
+      <li><a href="#">Link</a></li>
+      <li><a href="#">Link</a></li>
+    </ul>
+  </div><!--/.well -->
+</div><!--/span-->
 {% if stream %}
-  {% for item in stream %}
-    <div id="{{ item.id }}">
-      {{ item.content|safe }}
-    </div>
-  {% endfor %}
+  <div class="span9">
+    {% for item in stream %}
+      <div class="row-fluid">
+        <div class="rss-item">
+          <h2><a href="{{ item.link }}">{{ item.title }}</a></h2>
+          <h4>From <a href="{{ item.feed_link }}">{{ item.feed_name }}</a> by {{ item.author }}</h4>
+          {{ item.content|safe }}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
 {% else %}
   <p>No stream at this time</p>
 {% endif %}
-</body>
-</html>
+{% endblock %}

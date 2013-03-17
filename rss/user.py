@@ -8,11 +8,11 @@ class User(object):
 
     MAX_STREAM_SIZE = 2000
 
-    def __init__(self):
-        self.id = os.urandom(8).encode('hex')
-        self.feeds = []
-        self.stream = []
-        self.feed_indices = {}
+    def __init__(self, id, **kwargs):
+        self.id = id
+        self.feeds = kwargs.get('feeds', [])
+        self.stream = kwargs.get('stream', [])
+        self.feed_indices = kwargs.get('feed_indices', {})
         self.updated_at = time.time()
 
     def add_feed(self, feed_link):

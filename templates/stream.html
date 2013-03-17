@@ -1,0 +1,15 @@
+<html>
+<head>
+</head>
+<body>
+{% if stream %}
+  {% for item in stream %}
+    <div id="{{ item.id }}">
+      {{ item.content|safe }}
+    </div>
+  {% endfor %}
+{% else %}
+  <p>No stream at this time</p>
+{% endif %}
+</body>
+</html>

@@ -22,8 +22,6 @@ class StreamDBI(object):
         except StopIteration:
             return None
 
-        print item_dict.keys()
-
         return Item(item_dict)
 
     def _update_with_feed(self, feed_link):

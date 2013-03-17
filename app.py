@@ -1,4 +1,5 @@
 import os
+import sys
 from flask import (
     Flask,
     request,
@@ -8,7 +9,10 @@ from flask import (
     session,
     url_for
 )
-from rss.user import User
+
+sys.path.append(os.path.abspath(os.pardir))
+
+from rss.models.user import User
 
 
 app = Flask(__name__)

@@ -10,7 +10,7 @@ class Item(object):
             self.title = item_dict['title']
             self.link = item_dict['link']
             self.author = item_dict['author']
-            self._id = item_dict['id']
+            self._id = item_dict['_id']
             self.new = item_dict['new']
             self.content = item_dict['content']
         except KeyError:
@@ -25,7 +25,7 @@ class Item(object):
         value_dict['title'] = item_dict['title']
         value_dict['link'] = item_dict['link']
         value_dict['author'] = item_dict['author']
-        value_dict['id'] = item_dict['id']
+        value_dict['_id'] = item_dict['id']
         value_dict['new'] = True
 
         try:
@@ -37,7 +37,7 @@ class Item(object):
 
     def __repr__(self):
         return "Item<%s, %s (%s)>" % (
-            self.id.encode('utf-8'),
+            self._id.encode('utf-8'),
             self.title.encode('utf-8'),
             self.feed_name.encode('utf-8')
         )
@@ -47,8 +47,8 @@ class Item(object):
 
     def __eq__(self, other):
         if type(other) == type(u''):
-            return self.id == other
-        return self.id == other.id
+            return self._id == other
+        return self._id == other._id
 
     def mark_as_read(self):
         self.new = False

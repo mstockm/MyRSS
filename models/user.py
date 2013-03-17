@@ -13,8 +13,7 @@ class User(object):
     def __init__(self, id, email, **kwargs):
         self._id = id
         self.email = email
-        self.feeds = kwargs.get('feeds', [])
-        self.updated_at = time.time()
+        self.feed_links = kwargs.get('feed_links', [])
 
     @classmethod
     def create(cls, email):
@@ -27,10 +26,13 @@ class User(object):
         self.DBI.save(self)
 
     def add_feed(self, feed_link):
-        self.feeds.append(Feed(feed_link))
+        self.feed_links.append(feed_link)
         self.save()
 
     def get_stream(self, before_item=None, unread_only=True):
         stream_dbi = StreamDBI(self)
-        stream.update_stream()
-        return stream.get_stream(before_item, unread_only)
+        stream_dbi.update_stream()
+        return stream_dbi.get_stream(before_item, unread_only)
+
+    def serialize(self):
+        return dict(self.__dict__)

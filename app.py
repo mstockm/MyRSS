@@ -33,15 +33,15 @@ def stream():
     if not user_id:
         return redirect(url_for('login'))
 
-    user = User(user_id)
+    user = User(user_id, 'e')
 
     user.add_feed('http://feeds2.feedburner.com/PitchforkLatestNews')
     user.add_feed('http://feeds.feedburner.com/seriouseatsfeaturesvideos?format=xml')
     user.add_feed('http://pandodaily.com.feedsportal.com/c/35141/f/650422/index.rss')
 
-    user.update_stream()
+    stream = user.get_stream()
 
-    return render_template('stream.html', stream=user.stream)
+    return render_template('stream.html', stream=stream)
 
 
 @app.route('/login', methods=['GET', 'POST'])

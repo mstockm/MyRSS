@@ -16,11 +16,11 @@ class Feed(object):
 
         new_items = [Item.create(item, title, self.link) for item in feed['items']]
 
-        if seek_id is None:
+        if seek is None:
             return new_items
 
         try:
-            overlap = new_items.index(seek_id)
+            overlap = new_items.index(seek)
             new_items = new_items[:overlap]
         except ValueError:
             pass

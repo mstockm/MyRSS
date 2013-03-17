@@ -16,7 +16,7 @@ class Feed(object):
     def items_after_id(self, seek_id):
         feed = feedparser.parse(self.link)
 
-        new_items = [Item(it, self.title, self.link) for it in feed['items']]
+        new_items = [Item.create(it, self.title, self.link) for it in feed['items']]
 
         if seek_id is None:
             return new_items

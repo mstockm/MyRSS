@@ -11,7 +11,7 @@ class User(object):
     DBI = UserDBI()
 
     def __init__(self, id, email, **kwargs):
-        self.id = id
+        self._id = id
         self.email = email
         self.feeds = kwargs.get('feeds', [])
         self.stream = kwargs.get('stream', [])

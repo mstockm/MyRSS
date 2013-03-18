@@ -14,6 +14,9 @@ class Feed(object):
         feed = feedparser.parse(self.link)
         title = feed['feed'].get('title')
 
+        # Store title field for user object
+        self.name = title
+
         new_items = [Item.create(item, title, self.link) for item in feed['items']]
 
         if seek is None:

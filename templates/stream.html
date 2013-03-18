@@ -6,30 +6,37 @@
   margin-bottom: 10px;
   border: 1px solid black;
 }
+.sidebar-nav-fixed {
+     position:fixed;
+     top:60px;
+     width:21.97%;
+}
+
+@media (max-width: 767px) {
+     .sidebar-nav-fixed {
+         width:auto;
+     }
+}
+
+@media (max-width: 979px) {
+     .sidebar-nav-fixed {
+         position:static;
+        width: auto;
+     }
+}
 </style>
 {% endblock %}
 {% block title %}Stream{% endblock %}
 {% block content %}
 <div class="span3">
-  <div class="well sidebar-nav">
+  <div class="well sidebar-nav sidebar-nav-fixed">
     <ul class="nav nav-list">
-      <li class="nav-header">Sidebar</li>
-      <li class="active"><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-      <li class="nav-header">Sidebar</li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-      <li class="nav-header">Sidebar</li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
+      <li class="nav-header">Feeds</li>
+      {% for feed, link in feed_names.items() %}
+      <li><a href="{{ link }}">{{ feed }}</a></li>
+      {% endfor %}
     </ul>
+    <a class="btn" href="{{ url_for('add_feed') }}">Add Feed</a>
   </div><!--/.well -->
 </div><!--/span-->
 {% if stream %}

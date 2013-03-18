@@ -41,7 +41,10 @@ def stream():
 
     stream = user.get_stream()
 
-    return render_template('stream.html', stream=stream)
+    return render_template('stream.html',
+        stream=stream,
+        feed_names=user.feed_names
+    )
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -59,6 +62,15 @@ def login():
     session['user_id'] = user_id
     return redirect(url_for('stream'))
 
+
+@app.route('/add', methods=['GET', 'POST'])
+def add_feed():
+    if request.method == 'GET':
+        if session.get('user_id'):
+            return render_template('stream.html')
+        return redirect(url_for('login'))
+
+    return "Success"
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -14,6 +14,7 @@ class User(object):
         self._id = id
         self.email = email
         self.feed_links = kwargs.get('feed_links', [])
+        self.feed_names = {}
 
     @classmethod
     def create(cls, email):
@@ -32,6 +33,7 @@ class User(object):
     def get_stream(self, before_item=None, unread_only=True):
         stream_dbi = StreamDBI(self)
         stream_dbi.update_stream()
+        self.save()
         return stream_dbi.get_stream(before_item, unread_only)
 
     def serialize(self):

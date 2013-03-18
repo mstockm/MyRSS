@@ -26,7 +26,11 @@ class StreamDBI(object):
 
     def _update_with_feed(self, feed_link):
         latest = self.get_latest_from_feed(feed_link)
-        new_items = Feed(feed_link).items_after_item(latest)
+        feed = Feed(feed_link)
+        new_items = feed.items_after_item(latest)
+
+        # Update user's feed name map
+        self.user.feed_names[feed.name] = feed_link
 
         if new_items:
             mongo_items = [item.serialize() for item in new_items]

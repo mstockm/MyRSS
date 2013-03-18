@@ -7,7 +7,9 @@ from flask import (
     flash,
     render_template,
     session,
-    url_for
+    url_for,
+    make_response,
+    json
 )
 
 sys.path.append(os.path.abspath(os.pardir))
@@ -30,14 +32,9 @@ def index():
 @app.route('/stream', methods=['GET'])
 def stream():
     user_id = session.get('user_id')
-    if not user_id:
+    user = User.get(user_id)
+    if not user:
         return redirect(url_for('login'))
-
-    user = User(user_id, 'e')
-
-    user.add_feed('http://feeds2.feedburner.com/PitchforkLatestNews')
-    user.add_feed('http://feeds.feedburner.com/seriouseatsfeaturesvideos?format=xml')
-    user.add_feed('http://pandodaily.com.feedsportal.com/c/35141/f/650422/index.rss')
 
     stream = user.get_stream()
 
@@ -50,27 +47,52 @@ def stream():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        if session.get('user_id'):
+        user_id = session.get('user_id')
+        user = User.get(user_id)
+        if user:
             return redirect(url_for('stream'))
         return render_template('login.html')
 
-    user_id = request.form.get('user_id')
-    if not user_id:
-        flash('No User ID provided')
+    email = request.form.get('email')
+    if not email:
+        flash('No email provided')
         return redirect(url_for('login'))
 
-    session['user_id'] = user_id
+    user = User.get_by_email(email)
+    if not user:
+        user = User.create(email)
+    session['user_id'] = user._id
     return redirect(url_for('stream'))
 
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_feed():
-    if request.method == 'GET':
-        if session.get('user_id'):
-            return render_template('stream.html')
-        return redirect(url_for('login'))
+    user_id = session.get('user_id')
+    user = User.get(user_id)
+    if not user:
+        flash('Invalid User ID')
+        return redirect(url_for('index'))
 
-    return "Success"
+    if request.method == 'GET':
+        return render_template('add_feed.html', feed_names=user.feed_names)
+
+    feed_link = request.form.get('feed_link')
+    user.add_feed(feed_link)
+    flash('Feed added successfully')
+    return redirect(url_for('stream'))
+
+
+@app.route('/unsubscribe', methods=['POST'])
+def unsubscribe():
+    user_id = session.get('user_id')
+    user = User.get(user_id)
+    if not user:
+        return make_response(json.dumps({'message': "Invalid User ID"}), 400)
+
+    feed_link = request.form.get('feed')
+    user.remove_feed(feed_link)
+    return json.dumps({'message': "Success"})
+
 
 if __name__ == '__main__':
     app.run(debug=True)

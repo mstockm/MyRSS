@@ -23,8 +23,7 @@ class Feed(object):
             return new_items
 
         try:
-            overlap = new_items.index(seek)
-            new_items = new_items[:overlap]
+            new_items = filter(lambda x: x < seek, new_items)
         except ValueError:
             pass
 

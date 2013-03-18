@@ -8,26 +8,42 @@ class User(object):
 
     DBI = UserDBI()
 
-    def __init__(self, id, email, **kwargs):
-        self._id = id
-        self.email = email
+    def __init__(self, **kwargs):
+        self._id = kwargs['_id']
+        self.email = kwargs.get('email', '')
         self.feed_links = kwargs.get('feed_links', [])
         self.feed_names = kwargs.get('feed_names', {})
 
     @classmethod
     def create(cls, email):
-        id = os.urandom(8).encode('hex')
-        user = cls(id, email)
+        _id = os.urandom(8).encode('hex')
+        user = cls(_id=_id, email=email)
         user.save()
         return user
 
     @classmethod
-    def get(cls, id, email):
-        user_data = cls.DBI.get(id)
-        if not user_data:
+    def get_by_email(cls, email):
+        data = cls.DBI.get_by_email(email)
+        if not data:
             return None
 
-        return cls(id, email, **user_data)
+        data['feed_names'] = dict(
+            (k.replace('#', '.'), v) for k, v in data['feed_names'].items()
+        )
+
+        return cls(**data)
+
+    @classmethod
+    def get(cls, id):
+        data = cls.DBI.get(id)
+        if not data:
+            return None
+
+        data['feed_names'] = dict(
+            (k.replace('#', '.'), v) for k, v in data['feed_names'].items()
+        )
+
+        return cls(**data)
 
     def save(self):
         self.DBI.save(self)
@@ -36,6 +52,21 @@ class User(object):
         self.feed_links.append(feed_link)
         self.save()
 
+    def remove_feed(self, feed_link):
+        changed = False
+        try:
+            self.feed_links.remove(feed_link)
+            changed = True
+            del self.feed_names[feed_link]
+        except (ValueError, KeyError) as e:
+            pass
+
+        if changed:
+            self.save()
+            stream_dbi = StreamDBI(self)
+            stream_dbi.remove_feed(feed_link)
+
+
     def get_stream(self, before_item=None, unread_only=True):
         stream_dbi = StreamDBI(self)
         stream_dbi.update_stream()
@@ -43,4 +74,8 @@ class User(object):
         return stream_dbi.get_stream(before_item, unread_only)
 
     def serialize(self):
-        return dict(self.__dict__)
+        data = dict(self.__dict__)
+        data['feed_names'] = dict(
+            (k.replace('.', '#'), v) for k, v in data['feed_names'].items()
+        )
+        return data

@@ -10,7 +10,7 @@ class Item(object):
             self.title = item_dict['title']
             self.link = item_dict['link']
             self.author = item_dict['author']
-            self._id = item_dict['_id']
+            self.id = item_dict['id']
             self.new = item_dict['new']
             self.content = item_dict['content']
         except KeyError:
@@ -25,7 +25,7 @@ class Item(object):
         value_dict['title'] = item_dict['title']
         value_dict['link'] = item_dict['link']
         value_dict['author'] = item_dict['author']
-        value_dict['_id'] = item_dict['id']
+        value_dict['id'] = item_dict['id']
         value_dict['new'] = True
 
         try:

@@ -11,7 +11,7 @@ class StreamDBI(object):
     def __init__(self, user):
         self._connection = get_connection()
         self._db = self._connection.rss
-        self._collection = self._db['%s-items' % user._id]
+        self._collection = self._db['%s_items' % user._id]
         self.user = user
 
     def get_latest_from_feed(self, feed_link):
@@ -30,14 +30,14 @@ class StreamDBI(object):
         new_items = feed.items_after_item(latest)
 
         # Update user's feed name map
-        self.user.feed_names[feed.name] = feed_link
+        self.user.feed_names[feed_link] = feed.name
 
         if new_items:
             mongo_items = [item.serialize() for item in new_items]
             self._collection.insert(mongo_items)
 
     def get_stream(self, before_item=None, unread_only=True):
-        query = {'feed_link': {'$in': [link for link in self.user.feed_links]}}
+        query = {}
         if before_item:
             query['date'] = {'$lt': before_item.date}
         if unread_only:
@@ -47,6 +47,11 @@ class StreamDBI(object):
             self.PAGE_SIZE)
         return list(items)
 
+    def remove_feed(self, feed_link):
+        self._collection.remove({'feed_link': feed_link})
+
     def update_stream(self):
         for link in self.user.feed_links:
+            print "getting link", link
             self._update_with_feed(link)
+            print "link retrieved", link

@@ -17,3 +17,9 @@ class UserDBI(object):
         except:
             return None
 
+    def get_by_email(self, email):
+        cursor = self._collection.find({'email': email})
+        try:
+            return cursor.next()
+        except:
+            return None

@@ -10,3 +10,10 @@ class UserDBI(object):
     def save(self, user):
         self._collection.save(user.serialize())
 
+    def get(self, id):
+        cursor = self._collection.find({'_id': id})
+        try:
+            return cursor.next()
+        except:
+            return None
+

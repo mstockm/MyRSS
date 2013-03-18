@@ -1,6 +1,4 @@
 import os
-import time
-from heapq import merge
 from rss.models.feed import Feed
 from rss.db.user_dbi import UserDBI
 from rss.db.stream_dbi import StreamDBI
@@ -14,7 +12,7 @@ class User(object):
         self._id = id
         self.email = email
         self.feed_links = kwargs.get('feed_links', [])
-        self.feed_names = {}
+        self.feed_names = kwargs.get('feed_names', {})
 
     @classmethod
     def create(cls, email):
@@ -22,6 +20,14 @@ class User(object):
         user = cls(id, email)
         user.save()
         return user
+
+    @classmethod
+    def get(cls, id, email):
+        user_data = cls.DBI.get(id)
+        if not user_data:
+            return None
+
+        return cls(id, email, **user_data)
 
     def save(self):
         self.DBI.save(self)

@@ -98,22 +98,6 @@
     <div class="container-fluid">
       <div class="row-fluid">
         {% block sidebar %}
-        <div class="span3">
-          <div class="well sidebar-nav sidebar-nav-fixed">
-            <ul class="nav nav-list">
-              <li class="nav-header">Feeds</li>
-              {% for link, feed in feed_names.items() %}
-              <li>
-                <div style="margin-bottom: 7px;">
-                  <a href="{{ link }}">{{ feed }}</a>
-                  <a class="close close-custom" href="#unsubscribe-modal{{ loop.index0 }}" data-toggle="modal">&times;</a>
-                </div>
-              </li>
-              {% endfor %}
-            </ul>
-            <a class="btn" style="margin-left: 13px; margin-top: 7px;" href="{{ url_for('add_feed') }}">Add Feed</a>
-          </div><!--/.well -->
-        </div><!--/span-->
         {% endblock %}
 
         {% block content %}
@@ -123,32 +107,6 @@
       <hr>
 
     </div><!--/.fluid-container-->
-
-    <!-- Modals for unsubscribing-->
-    {% for link, feed in feed_names.items() %}
-    <div class="modal hide fade" id="unsubscribe-modal{{ loop.index0 }}">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Unsubscribe?</h3>
-      </div>
-      <div class="modal-body">
-        <p>Are you sure you want to unsubscribe from {{ feed }}?</p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn unsubscribe" data-dismiss="modal" aria-hidden="true">Close</button>
-        <button class="btn btn-primary" onclick="unsubscribe('{{ link }}', '#unsubscribe-modal{{ loop.index0 }}')">Unsubscribe</button>
-      </div>
-    </div>
-    {% endfor %}
-
-    <script>
-      var unsubscribe = function(link, id) {
-        var unsub = $.post('{{ url_for('unsubscribe') }}', {feed: link});
-        unsub.done(function() {
-          window.location = "{{ url_for('index') }}";
-        });
-      }
-    </script>
 
     <!-- Le javascript
     ================================================== -->

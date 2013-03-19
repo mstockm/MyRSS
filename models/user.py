@@ -11,7 +11,7 @@ class User(object):
     def __init__(self, **kwargs):
         self._id = kwargs['_id']
         self.email = kwargs.get('email', '')
-        self.feed_links = kwargs.get('feed_links', [])
+        self.feed_links = kwargs.get('feed_links', set())
         self.feed_names = kwargs.get('feed_names', {})
 
     @classmethod
@@ -43,13 +43,15 @@ class User(object):
             (k.replace('#', '.'), v) for k, v in data['feed_names'].items()
         )
 
+        data['feed_links'] = set(data['feed_links'])
+
         return cls(**data)
 
     def save(self):
         self.DBI.save(self)
 
     def add_feed(self, feed_link):
-        self.feed_links.append(feed_link)
+        self.feed_links.add(feed_link)
         self.save()
 
     def remove_feed(self, feed_link):
@@ -78,4 +80,6 @@ class User(object):
         data['feed_names'] = dict(
             (k.replace('.', '#'), v) for k, v in data['feed_names'].items()
         )
+
+        data['feed_links'] = list(data['feed_links'])
         return data

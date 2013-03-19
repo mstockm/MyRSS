@@ -24,7 +24,7 @@ class Item(object):
         value_dict['date'] = timegm(item_dict['published_parsed'])
         value_dict['title'] = item_dict['title']
         value_dict['link'] = item_dict['link']
-        value_dict['author'] = item_dict['author']
+        value_dict['author'] = item_dict.get('author')
         value_dict['id'] = item_dict['id']
         value_dict['new'] = True
 

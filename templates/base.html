@@ -85,7 +85,7 @@
           <a class="brand" href="{{ url_for('index') }}">MyRSS</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
-              Logged in as <a href="#" class="navbar-link">Username</a>
+            {{ email }} - <a href="{{ url_for('logout') }}" class="navbar-link">Logout</a>
             </p>
             <ul class="nav">
               <li class="active"><a href="{{ url_for('stream') }}">Stream</a></li>
@@ -103,8 +103,6 @@
         {% block content %}
         {% endblock %}
       </div><!--/row-->
-
-      <hr>
 
     </div><!--/.fluid-container-->
 

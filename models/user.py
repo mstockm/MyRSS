@@ -69,11 +69,11 @@ class User(object):
             stream_dbi.remove_feed(feed_link)
 
 
-    def get_stream(self, before_item=None, unread_only=True):
+    def get_stream(self, before_time=None, unread_only=True):
         stream_dbi = StreamDBI(self)
         stream_dbi.update_stream()
         self.save()
-        return stream_dbi.get_stream(before_item, unread_only)
+        return stream_dbi.get_stream(before_time, unread_only)
 
     def serialize(self):
         data = dict(self.__dict__)

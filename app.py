@@ -36,11 +36,17 @@ def stream():
     if not user:
         return redirect(url_for('login'))
 
-    stream = user.get_stream()
+    before_time = request.args.get('before')
+    stream = user.get_stream(before_time=before_time)
+    before=None
+    if stream:
+        before=stream[-1]['date']
 
     return render_template('stream.html',
         stream=stream,
-        feed_names=user.feed_names
+        feed_names=user.feed_names,
+        email=user.email,
+        before=before
     )
 
 
@@ -63,6 +69,12 @@ def login():
         user = User.create(email)
     session['user_id'] = user._id
     return redirect(url_for('stream'))
+
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
 
 
 @app.route('/add', methods=['GET', 'POST'])

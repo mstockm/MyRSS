@@ -12,13 +12,17 @@
       <div class="row-fluid">
         <div class="rss-item">
           <h2><a href="{{ item.link }}">{{ item.title }}</a></h2>
-          <h4>From <a href="{{ item.feed_link }}">{{ item.feed_name }}</a> by {{ item.author }}</h4>
+          <h4>From <a href="{{ item.feed_link }}">{{ item.feed_name }}</a>
+            {% if item.author %} by {{ item.author }}{% endif %}</h4>
           {{ item.content|safe }}
         </div>
       </div>
     {% endfor %}
+    <a href="{{ url_for('stream', before=before) }}" class="btn">Load more</a>
   </div>
 {% else %}
-  <p>No stream at this time</p>
+  <div class="span9">
+    <p>Add feeds on the left to get started!</p>
+  </div>
 {% endif %}
 {% endblock %}

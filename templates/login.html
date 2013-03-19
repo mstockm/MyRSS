@@ -1,18 +1,70 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-  </head>
-  <body>
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      {% for message in messages %}
-        <p>{{ message }}</p>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
+    <meta charset="utf-8">
+    <title>MyRSS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-  <form action="{{ url_for('login') }}" method="post">
-    Email: <input type="text" name="email"><br>
-    <input type="submit" value="Submit">
-  </form>
+    <!-- Le styles -->
+    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+
+      .rss-hero {
+        margin-top: 12px;
+        margin-bottom: 20px;
+      }
+    </style>
+    <link href="{{ url_for('static', filename='css/bootstrap-responsive.css') }}" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">MyRSS</a>
+          <div class="nav-collapse collapse">
+            <form action="{{ url_for('login') }}" method="post" class="navbar-form pull-right">
+              <input class="span2" type="text" name="email" placeholder="Email">
+              <button type="submit" class="btn" data-loading-text="Loading..." onclick="$(this).button('loading')">Sign in</button>
+            </form>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <div class="hero-unit">
+        <h1>Welcome to MyRSS</h1>
+        <p class="rss-hero">MyRSS is a new RSS reader designed as a lightweigt replacement for Google Reader. To get started, sign in!</p>
+        <div>
+          <form action="{{ url_for('login') }}" method="post">
+            <input class="span3" style="height: 35px; margin-bottom: 0px; font-size:18px" type="text" name="email" placeholder="Email">
+            <button type="submit" class="btn btn-primary btn-large" data-loading-text="Loading..." onclick="$(this).button('loading')">Sign in</button>
+          </form>
+        </div>
+      </div>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
   </body>
 </html>

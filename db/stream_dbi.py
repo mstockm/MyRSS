@@ -36,13 +36,15 @@ class StreamDBI(object):
             mongo_items = [item.serialize() for item in new_items]
             self._collection.insert(mongo_items)
 
-    def get_stream(self, before_item=None, unread_only=True):
+    def get_stream(self, before_time=None, unread_only=True):
         query = {}
-        if before_item:
-            query['date'] = {'$lt': before_item.date}
+        print before_time
+        if before_time:
+            query['date'] = {'$lt': int(before_time)}
         if unread_only:
             query['new'] = True
 
+        print query
         items = self._collection.find(query).sort('date', DESCENDING).limit(
             self.PAGE_SIZE)
         return list(items)

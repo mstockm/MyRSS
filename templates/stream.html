@@ -52,9 +52,13 @@ $(window).on("scroll.read", function() {
     var next = rssHighlighted.parent().next();
     if (next.length !== 0) {
       var windowTop = $(window).scrollTop();
-      var highlightBottom = rssHighlighted.offset().top + rssHighlighted.height();
+      var windowBottom = windowTop + $(window).height();
+      var highlightTop = rssHighlighted.offset().top;
+      var highlightBottom = highlightTop + rssHighlighted.height();
       if (windowTop + 200 > highlightBottom) {
         rssHighlight(next.children());
+      } else if (highlightTop + 200 > windowBottom) {
+        rssHighlight(rssHighlighted.parent().prev().children());
       }
     }
   }
@@ -64,6 +68,7 @@ $(window).on("scroll.read", function() {
 // Infinite scroll
 var before = {{ before }};
 $("#more").hide();
+var called = {};
 
 $(window).on("scroll.inf", function() {
   var _window = $(window);
@@ -78,6 +83,11 @@ $(window).on("scroll.inf", function() {
   if(_window.scrollTop() + _window.height() == _document.height()) {
     if (!loading) {
       loading = true;
+
+      if (before in called) {
+        return false;
+      }
+      called[before] = true;
       $.ajax({
         type: "GET",
         url: "{{ url_for('stream_ajax') }}",

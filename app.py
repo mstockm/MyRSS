@@ -129,5 +129,20 @@ def unsubscribe():
     return json.dumps({'message': "Success"})
 
 
+@app.route('/item/read', methods=['POST'])
+def mark_as_read():
+    user_id = session.get('user_id')
+    user = User.get(user_id)
+    if not user:
+        return make_response(json.dumps({'message': "Invalid User ID"}), 400)
+
+    item_id = request.form.get('item_id')
+    item = Item.get_for_user(item_id, user)
+    item.mark_as_read()
+    item.save()
+
+    return json.dumps({'message': "Success"})
+
+
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,8 +1,13 @@
 from calendar import timegm
+from rss.db.item_dbi import ItemDBI
+
+
+class NoUserError(Exception):
+    pass
 
 
 class Item(object):
-    def __init__(self, item_dict):
+    def __init__(self, item_dict, DBI=None):
         try:
             self.feed_name = item_dict['feed_name']
             self.feed_link = item_dict['feed_link']
@@ -15,6 +20,24 @@ class Item(object):
             self.content = item_dict['content']
         except KeyError:
             return None
+
+        if DBI:
+            self.DBI = DBI
+
+    @classmethod
+    def get_for_user(cls, item_id, user):
+        DBI = ItemDBI(user)
+        item_dict = DBI.get(item_id)
+        if not item_dict:
+            return None
+
+        return cls(item_dict, DBI)
+
+    def save(self):
+        try:
+            self.DBI.save(self)
+        except AttributeError:
+            raise NoUserError()
 
     @classmethod
     def create(cls, item_dict, feed_name, feed_link):

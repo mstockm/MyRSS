@@ -38,9 +38,9 @@ def stream():
 
     before_time = request.args.get('before')
     stream = user.get_stream(before_time=before_time)
-    before=None
+    before = None
     if stream:
-        before=stream[-1]['date']
+        before = stream[-1]['date']
 
     return render_template('stream.html',
         stream=stream,
@@ -48,6 +48,29 @@ def stream():
         email=user.email,
         before=before
     )
+
+
+@app.route('/stream_ajax', methods=['GET'])
+def stream_ajax():
+    user_id = session.get('user_id')
+    user = User.get(user_id)
+    if not user:
+        return redirect(url_for('login'))
+
+    before_time = request.args.get('before')
+    stream = user.get_stream(before_time=before_time)
+    before = ""
+    if stream:
+        before = stream[-1]['date']
+
+    content = render_template('stream_ajax.html', stream=stream)
+    length = len(stream)
+
+    return json.dumps({
+        'content': content,
+        'length': length,
+        'before': before
+    })
 
 
 @app.route('/login', methods=['GET', 'POST'])

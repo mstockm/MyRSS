@@ -8,9 +8,10 @@
 {% block content %}
 {% if stream %}
   <div class="span9">
+    <div id="rss-content">
     {% for item in stream %}
       <div class="row-fluid">
-        <div class="rss-item">
+        <div class="rss-item" onclick="rssHighlight(this, '{{ item._id }}')">
           <h2><a href="{{ item.link }}">{{ item.title }}</a></h2>
           <h4>From <a href="{{ item.feed_link }}">{{ item.feed_name }}</a>
             {% if item.author %} by {{ item.author }}{% endif %}</h4>
@@ -18,11 +19,70 @@
         </div>
       </div>
     {% endfor %}
-    <a href="{{ url_for('stream', before=before) }}" class="btn">Load more</a>
+    </div>
+    <div class="row-fluid" id="more">
+      <p>Loading more items...</p>
+    </div>
+  </div>
+{% elif feed_names %}
+  <div class="span9">
+    <p>No items</p>
   </div>
 {% else %}
   <div class="span9">
     <p>Add feeds on the left to get started!</p>
   </div>
 {% endif %}
+<script>
+var rssHighlighted;
+
+var rssHighlight = function(el, item_id) {
+  console.log(item_id);
+  if (rssHighlighted !== undefined) {
+    rssHighlighted.css("border-color", "black");
+  }
+  rssHighlighted = $(el);
+  rssHighlighted.css("border-color", "#00b4f5");
+}
+
+{% if stream %}
+var before = {{ before }};
+$("#more").hide();
+
+$(window).on("scroll.inf", function () {
+  var _window = $(window);
+  var _document = $(document);
+  var loading = false;
+
+  if(_window.scrollTop() + _window.height() > _document.height() - 200) {
+    $("#more").css("top", "400");
+    $("#more").show();
+  }
+
+  if(_window.scrollTop() + _window.height() == _document.height()) {
+    if (!loading) {
+      loading = true;
+      $.ajax({
+        type: "GET",
+        url: "{{ url_for('stream_ajax') }}",
+        data: {before: before},
+        dataType: "json",
+        success: function(result) {
+          $("#more").hide();
+          if (result.length > 0) {
+            before = result.before;
+            $("#rss-content").append(result.content);
+          } else {
+            $("#rss-content").append(result.content);
+            _window.off("scroll.inf");
+          }
+          loading = false;
+        }
+      });
+    }
+  }
+});
+{% endif %}
+
+</script>
 {% endblock %}

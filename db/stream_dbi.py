@@ -2,16 +2,17 @@ from rss.db import get_connection
 from rss.models.item import Item
 from rss.models.feed import Feed
 from pymongo import DESCENDING
+from bson.objectid import ObjectId
 
 
 class StreamDBI(object):
 
-    PAGE_SIZE = 10
+    PAGE_SIZE = 5
 
     def __init__(self, user):
         self._connection = get_connection()
         self._db = self._connection.rss
-        self._collection = self._db['%s_items' % user._id]
+        self._collection = self._db['items_%s' % user._id]
         self.user = user
 
     def get_latest_from_feed(self, feed_link):
@@ -51,6 +52,16 @@ class StreamDBI(object):
 
     def remove_feed(self, feed_link):
         self._collection.remove({'feed_link': feed_link})
+
+    def get_item_by_id(self, item_id):
+        try:
+            object_id = ObjectId(item_id)
+            item_dict = self._collection.find(
+                {'_id': item_id}).next()
+        except StopIteration:
+            return None
+
+        return Item(item_dict)
 
     def update_stream(self):
         for link in self.user.feed_links:

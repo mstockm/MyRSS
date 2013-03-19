@@ -48,10 +48,19 @@ $(document).keyup(function(e) {
   if (rssHighlighted === undefined && e.keyCode === 74) {
     rssHighlight($("#rss-first"));
   } else if (e.keyCode === 74) {
+    if (!loadOnJPress) {
+      return false;
+    }
+
     var next = rssHighlighted.parent().next();
     if (next.length !== 0) {
       rssHighlight(next.children());
       $(window).scrollTop(rssHighlighted.position().top - 60);
+
+      // Preemptively load more if there is only 1 more post
+      if (next.next().length === 0) {
+        loadMore();
+      }
     } else {
       loadMore(scrollToNext);
     }
@@ -96,8 +105,10 @@ var before = {{ before }};
 $("#more").hide();
 var called = {};
 var loading = false;
+var loadOnJPress = true;
 
 var loadMore = function(callback) {
+  console.log('loading');
   if (!loading) {
     loading = true;
 
@@ -116,8 +127,9 @@ var loadMore = function(callback) {
           before = result.before;
           $("#rss-content").append(result.content);
         } else {
+          loadOnJPress = false;
+          $(window).off("scroll.inf");
           $("#rss-content").append(result.content);
-          _window.off("scroll.inf");
         }
         loading = false;
         if (callback !== undefined) {

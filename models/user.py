@@ -71,8 +71,9 @@ class User(object):
 
     def get_stream(self, before_time=None, unread_only=True):
         stream_dbi = StreamDBI(self)
-        stream_dbi.update_stream()
-        self.save()
+        if not before_time:
+            stream_dbi.update_stream()
+            self.save()
         return stream_dbi.get_stream(before_time, unread_only)
 
     def serialize(self):

@@ -11,7 +11,7 @@
     <div id="rss-content">
     {% for item in stream %}
       <div class="row-fluid">
-        <div class="rss-item" onclick="rssHighlight(this, '{{ item._id }}')">
+        <div {% if loop.first %}id="rss-first" {% endif %}class="rss-item" onclick="rssHighlight($(this))" data-item-id="{{ item._id }}">
           <h2><a href="{{ item.link }}">{{ item.title }}</a></h2>
           <h4>From <a href="{{ item.feed_link }}">{{ item.feed_name }}</a>
             {% if item.author %} by {{ item.author }}{% endif %}</h4>
@@ -36,20 +36,36 @@
 <script>
 var rssHighlighted;
 
-var rssHighlight = function(el, item_id) {
-  console.log(item_id);
+var rssHighlight = function(el) {
+  console.log(el.attr("data-item-id"));
   if (rssHighlighted !== undefined) {
     rssHighlighted.css("border-color", "black");
   }
-  rssHighlighted = $(el);
+  rssHighlighted = el;
   rssHighlighted.css("border-color", "#00b4f5");
 }
 
+$(window).on("scroll.read", function() {
+  if (rssHighlighted === undefined) {
+    rssHighlight($("#rss-first"));
+  } else {
+    var next = rssHighlighted.parent().next();
+    if (next.length !== 0) {
+      var windowTop = $(window).scrollTop();
+      var highlightBottom = rssHighlighted.offset().top + rssHighlighted.height();
+      if (windowTop + 200 > highlightBottom) {
+        rssHighlight(next.children());
+      }
+    }
+  }
+});
+
 {% if stream %}
+// Infinite scroll
 var before = {{ before }};
 $("#more").hide();
 
-$(window).on("scroll.inf", function () {
+$(window).on("scroll.inf", function() {
   var _window = $(window);
   var _document = $(document);
   var loading = false;

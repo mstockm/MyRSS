@@ -3,6 +3,7 @@ from rss.models.item import Item
 from rss.models.feed import Feed
 from pymongo import DESCENDING
 from bson.objectid import ObjectId
+from BeautifulSoup import BeautifulSoup
 
 
 class StreamDBI(object):
@@ -48,7 +49,12 @@ class StreamDBI(object):
         print query
         items = self._collection.find(query).sort('date', DESCENDING).limit(
             self.PAGE_SIZE)
-        return list(items)
+        output = []
+        for item in items:
+            content = BeautifulSoup(item['content']).prettify()
+            item['content'] = unicode(content, 'utf-8')
+            output.append(item)
+        return output
 
     def remove_feed(self, feed_link):
         self._collection.remove({'feed_link': feed_link})

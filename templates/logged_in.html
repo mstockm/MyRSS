@@ -8,7 +8,7 @@
     <p style="padding-left: 15px; padding-top: 10px;">
       <strong id="unread-count">{{ unread_count }}</strong> unread items
     </p>
-    <div class="btn-group" style="padding-left: 15px; padding-bottom: 20px;">
+    <div class="btn-group" style="padding-left: 15px;">
       <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
         {% if unread %}
         Unread items
@@ -27,7 +27,7 @@
         {% endif %}
       </ul>
     </div>
-    <ul class="nav nav-list">
+    <ul class="nav nav-list" style="padding-top: 20px;">
       <li class="nav-header">Feeds</li>
       {% for link, feed in feed_names.items() %}
       <li>

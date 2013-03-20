@@ -33,6 +33,29 @@ def index():
         return redirect(url_for('login'))
 
 
+@app.route('/starred', methods=['GET'])
+def starred_stream():
+    user_id = session.get('user_id')
+    user = User.get(user_id)
+    if not user:
+        return redirect(url_for('login'))
+
+    stream, unread_count = user.get_starred_stream_with_count()
+    before = None
+    if stream:
+        before = stream[-1]['date']
+
+    return render_template('stream.html',
+        stream=stream,
+        feed_names=user.feed_names,
+        email=user.email,
+        before=before,
+        unread_count=unread_count,
+        unread=True,
+        starred=True
+    )
+
+
 @app.route('/stream', methods=['GET'])
 def stream():
     user_id = session.get('user_id')
@@ -53,7 +76,8 @@ def stream():
         email=user.email,
         before=before,
         unread_count=unread_count,
-        unread=unread
+        unread=unread,
+        starred=False
     )
 
 
@@ -147,6 +171,36 @@ def mark_as_read():
     item_id = request.form.get('item_id')
     item = Item.get_for_user(item_id, user)
     item.mark_as_read()
+    item.save()
+
+    return json.dumps({'message': "Success"})
+
+
+@app.route('/item/star', methods=['POST'])
+def star():
+    user_id = session.get('user_id')
+    user = User.get(user_id)
+    if not user:
+        return make_response(json.dumps({'message': "Invalid User ID"}), 400)
+
+    item_id = request.form.get('item_id')
+    item = Item.get_for_user(item_id, user)
+    item.star()
+    item.save()
+
+    return json.dumps({'message': "Success"})
+
+
+@app.route('/item/unstar', methods=['POST'])
+def unstar():
+    user_id = session.get('user_id')
+    user = User.get(user_id)
+    if not user:
+        return make_response(json.dumps({'message': "Invalid User ID"}), 400)
+
+    item_id = request.form.get('item_id')
+    item = Item.get_for_user(item_id, user)
+    item.unstar()
     item.save()
 
     return json.dumps({'message': "Success"})

@@ -15,6 +15,7 @@
           <h2><a href="{{ item.link }}">{{ item.title }}</a></h2>
           <h4 class="rss-subhead">From <a href="{{ item.feed_link }}">{{ item.feed_name }}</a>
             {% if item.author %} by {{ item.author }}{% endif %}</h4>
+          <button type="button" class="btn {% if item.starred %}active {% endif %}btn-warning star-button" data-toggle="button" onclick="toggleStarred($(this))">Star{% if item.starred %}red{% endif %}</button>
           <p class="rss-date">{{ format_timestamp(item.date) }}</p>
           {{ item.content|safe }}
         </div>
@@ -35,6 +36,17 @@
   </div>
 {% endif %}
 <script>
+var toggleStarred = function(el) {
+  itemId = el.parent().attr("data-item-id");
+  if (el.html() === "Star") {
+    $.post("{{ url_for('star') }}", data = {item_id: itemId});
+    el.html("Starred");
+  } else {
+    $.post("{{ url_for('unstar') }}", data = {item_id: itemId});
+    el.html("Star");
+  }
+}
+
 var rssHighlighted;
 
 var rssHighlight = function(el) {
@@ -127,7 +139,8 @@ var loadMore = function(callback) {
 
     var data = {
       before: before,
-      items: {% if unread %}'unread'{% else %}'all'{% endif %}
+      items: {% if unread %}'unread'{% else %}'all'{% endif %},
+      starred: {% if starred %}'yes'{% else %}'no'{% endif %}
     }
 
     called[before] = true;

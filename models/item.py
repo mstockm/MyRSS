@@ -81,6 +81,12 @@ class Item(object):
     def mark_as_read(self):
         self.new = False
 
+    def star(self):
+        self.starred = True
+
+    def unstar(self):
+        self.starred = False
+
     def serialize(self):
         item_dict = dict(self.__dict__)
         if 'DBI' in item_dict:

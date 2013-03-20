@@ -42,6 +42,12 @@
         float: left;
       }
 
+      .star-button {
+        float: left;
+        margin-top: 5px;
+        margin-left: 10px;
+      }
+
       @media (max-width: 980px) {
         /* Enable use of floated navbar text */
         .navbar-text.pull-right {
@@ -100,7 +106,13 @@
             {{ email }} - <a href="{{ url_for('logout') }}" class="navbar-link">Logout</a>
             </p>
             <ul class="nav">
+              {% if starred %}
+              <li><a href="{{ url_for('stream') }}">Stream</a></li>
+              <li class="active"><a href="{{ url_for('starred_stream') }}">Starred</a></li>
+              {% else %}
               <li class="active"><a href="{{ url_for('stream') }}">Stream</a></li>
+              <li><a href="{{ url_for('starred_stream') }}">Starred</a></li>
+              {% endif %}
             </ul>
           </div><!--/.nav-collapse -->
         </div>

@@ -17,9 +17,12 @@ sys.path.append(os.path.abspath(os.pardir))
 from rss.models.user import User
 from rss.models.item import Item
 
+from rss.templates.helpers import format_timestamp
+
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('secret_key', 'bad_secret_key')
+app.jinja_env.globals.update(format_timestamp=format_timestamp)
 
 
 @app.route('/')

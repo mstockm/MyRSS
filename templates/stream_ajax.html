@@ -3,8 +3,9 @@
   <div class="row-fluid">
     <div class="rss-item" data-item-id="{{ item._id }}" onclick="rssHighlight($(this))">
       <h2><a href="{{ item.link }}">{{ item.title }}</a></h2>
-      <h4>From <a href="{{ item.feed_link }}">{{ item.feed_name }}</a>
+      <h4 class="rss-subhead">From <a href="{{ item.feed_link }}">{{ item.feed_name }}</a>
         {% if item.author %} by {{ item.author }}{% endif %}</h4>
+        <p class="rss-date">{{ format_timestamp(item.date) }}</p>
       {{ item.content|safe }}
     </div>
   </div>

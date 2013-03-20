@@ -45,10 +45,12 @@ var rssHighlight = function(el) {
 
   var count = $("#unread-count");
   var new_count = parseInt(count.html()) - 1;
-  count.html(new_count);
-  $.post("{{ url_for('mark_as_read') }}", {
-    item_id: el.attr("data-item-id")
-  });
+  if (new_count >= 0) {
+    count.html(new_count);
+    $.post("{{ url_for('mark_as_read') }}", {
+      item_id: el.attr("data-item-id")
+    });
+  }
 }
 
 $(document).keyup(function(e) {
@@ -115,18 +117,23 @@ var loading = false;
 var loadOnJPress = true;
 
 var loadMore = function(callback) {
-  console.log('loading');
   if (!loading) {
     loading = true;
 
     if (before in called) {
       return false;
     }
+
+    var data = {
+      before: before,
+      items: {% if unread %}'unread'{% else %}'all'{% endif %}
+    }
+
     called[before] = true;
     $.ajax({
       type: "GET",
       url: "{{ url_for('stream_ajax') }}",
-      data: {before: before},
+      data: data,
       dataType: "json",
       success: function(result) {
         $("#more").hide();

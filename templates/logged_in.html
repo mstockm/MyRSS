@@ -8,6 +8,25 @@
     <p style="padding-left: 15px; padding-top: 10px;">
       <strong id="unread-count">{{ unread_count }}</strong> unread items
     </p>
+    <div class="btn-group" style="padding-left: 15px; padding-bottom: 20px;">
+      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+        {% if unread %}
+        Unread items
+        {% else %}
+        All items
+        {% endif %}
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+        {% if unread %}
+        <li><a href="{{ url_for('stream', items='all') }}">All items</a></li>
+        <li><a href="#">Unread items</a></li>
+        {% else %}
+        <li><a href="{{ url_for('stream') }}">Unread items</a></li>
+        <li><a href="#">All items</a></li>
+        {% endif %}
+      </ul>
+    </div>
     <ul class="nav nav-list">
       <li class="nav-header">Feeds</li>
       {% for link, feed in feed_names.items() %}

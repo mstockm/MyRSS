@@ -37,7 +37,9 @@ def stream():
     if not user:
         return redirect(url_for('login'))
 
-    stream, unread_count = user.get_stream_with_count()
+    unread = False if request.args.get('items') == 'all' else True
+
+    stream, unread_count = user.get_stream_with_count(unread)
     before = None
     if stream:
         before = stream[-1]['date']
@@ -47,7 +49,8 @@ def stream():
         feed_names=user.feed_names,
         email=user.email,
         before=before,
-        unread_count=unread_count
+        unread_count=unread_count,
+        unread=unread
     )
 
 
@@ -59,7 +62,8 @@ def stream_ajax():
         return redirect(url_for('login'))
 
     before_time = request.args.get('before')
-    stream = user.get_stream(before_time=before_time)
+    unread = False if request.args.get('items') == 'all' else True
+    stream = user.get_stream(before_time=before_time, unread_only=unread)
     before = ""
     if stream:
         before = stream[-1]['date']

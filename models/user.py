@@ -68,6 +68,16 @@ class User(object):
             stream_dbi = StreamDBI(self)
             stream_dbi.remove_feed(feed_link)
 
+    def get_stream_with_count(self, unread_only=True):
+        stream_dbi = StreamDBI(self)
+        stream_dbi.update_stream()
+        self.save()
+        stream = stream_dbi.get_stream(
+            before_time=None,
+            unread_only=unread_only
+        )
+        count = stream_dbi.get_unread_count()
+        return stream, count
 
     def get_stream(self, before_time=None, unread_only=True):
         stream_dbi = StreamDBI(self)

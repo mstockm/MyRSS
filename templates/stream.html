@@ -43,6 +43,9 @@ var rssHighlight = function(el) {
   rssHighlighted = el;
   rssHighlighted.css("border-color", "#00b4f5");
 
+  var count = $("#unread-count");
+  var new_count = parseInt(count.html()) - 1;
+  count.html(new_count);
   $.post("{{ url_for('mark_as_read') }}", {
     item_id: el.attr("data-item-id")
   });

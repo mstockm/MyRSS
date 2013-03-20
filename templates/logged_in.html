@@ -5,6 +5,9 @@
 {% block sidebar %}
 <div class="span3">
   <div class="well sidebar-nav sidebar-nav-fixed">
+    <p style="padding-left: 15px; padding-top: 10px;">
+      <strong id="unread-count">{{ unread_count }}</strong> unread items
+    </p>
     <ul class="nav nav-list">
       <li class="nav-header">Feeds</li>
       {% for link, feed in feed_names.items() %}

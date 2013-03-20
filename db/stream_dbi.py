@@ -54,6 +54,9 @@ class StreamDBI(object):
             output.append(item)
         return output
 
+    def get_unread_count(self):
+        return self._collection.find({'new': True}).count()
+
     def remove_feed(self, feed_link):
         self._collection.remove({'feed_link': feed_link})
 

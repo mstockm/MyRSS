@@ -37,8 +37,7 @@ def stream():
     if not user:
         return redirect(url_for('login'))
 
-    before_time = request.args.get('before')
-    stream = user.get_stream(before_time=before_time)
+    stream, unread_count = user.get_stream_with_count()
     before = None
     if stream:
         before = stream[-1]['date']
@@ -47,7 +46,8 @@ def stream():
         stream=stream,
         feed_names=user.feed_names,
         email=user.email,
-        before=before
+        before=before,
+        unread_count=unread_count
     )
 
 

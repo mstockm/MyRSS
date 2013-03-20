@@ -15,6 +15,7 @@ from flask import (
 sys.path.append(os.path.abspath(os.pardir))
 
 from rss.models.user import User
+from rss.models.item import Item
 
 
 app = Flask(__name__)

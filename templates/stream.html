@@ -42,6 +42,10 @@ var rssHighlight = function(el) {
   }
   rssHighlighted = el;
   rssHighlighted.css("border-color", "#00b4f5");
+
+  $.post("{{ url_for('mark_as_read') }}", {
+    item_id: el.attr("data-item-id")
+  });
 }
 
 $(document).keyup(function(e) {

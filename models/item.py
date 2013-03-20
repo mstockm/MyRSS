@@ -21,6 +21,11 @@ class Item(object):
         except KeyError:
             return None
 
+        try:
+            self._id = item_dict['_id']
+        except:
+            pass
+
         if DBI:
             self.DBI = DBI
 
@@ -77,4 +82,8 @@ class Item(object):
         self.new = False
 
     def serialize(self):
-        return dict(self.__dict__)
+        item_dict = dict(self.__dict__)
+        if 'DBI' in item_dict:
+            del item_dict['DBI']
+
+        return item_dict

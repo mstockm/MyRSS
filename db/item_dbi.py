@@ -13,11 +13,12 @@ class ItemDBI(object):
         try:
             object_id = ObjectId(item_id)
             item_dict = self._collection.find(
-                {'_id': item_id}).next()
+                {'_id': object_id}).next()
         except StopIteration:
             return None
 
         return item_dict
 
     def save(self, item):
-        self._collection.save(item.serialize())
+        item_dict = item.serialize()
+        self._collection.save(item_dict)

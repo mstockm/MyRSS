@@ -40,13 +40,11 @@ class StreamDBI(object):
 
     def get_stream(self, before_time=None, unread_only=True):
         query = {}
-        print before_time
         if before_time:
             query['date'] = {'$lt': int(before_time)}
         if unread_only:
             query['new'] = True
 
-        print query
         items = self._collection.find(query).sort('date', DESCENDING).limit(
             self.PAGE_SIZE)
         output = []
@@ -71,6 +69,4 @@ class StreamDBI(object):
 
     def update_stream(self):
         for link in self.user.feed_links:
-            print "getting link", link
             self._update_with_feed(link)
-            print "link retrieved", link

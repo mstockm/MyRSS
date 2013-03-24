@@ -14,12 +14,20 @@ class User(object):
         self.feed_links = kwargs.get('feed_links', set())
         self.feed_names = kwargs.get('feed_names', {})
 
+    def __repr__(self):
+        return "User <%s, %s>" % (self.email, self._id)
+
     @classmethod
     def create(cls, email):
         _id = os.urandom(8).encode('hex')
         user = cls(_id=_id, email=email)
         user.save()
         return user
+
+    @classmethod
+    def list(cls):
+        user_data = cls.DBI.list()
+        return [cls(**user) for user in user_data]
 
     @classmethod
     def get_by_email(cls, email):
@@ -70,8 +78,6 @@ class User(object):
 
     def get_starred_stream_with_count(self):
         stream_dbi = StreamDBI(self)
-        stream_dbi.update_stream()
-        self.save()
         stream = stream_dbi.get_stream(
             before_time=None,
             unread_only=False,
@@ -82,8 +88,6 @@ class User(object):
 
     def get_stream_with_count(self, unread_only=True):
         stream_dbi = StreamDBI(self)
-        stream_dbi.update_stream()
-        self.save()
         stream = stream_dbi.get_stream(
             before_time=None,
             unread_only=unread_only
@@ -93,10 +97,11 @@ class User(object):
 
     def get_stream(self, before_time=None, unread_only=True):
         stream_dbi = StreamDBI(self)
-        if not before_time:
-            stream_dbi.update_stream()
-            self.save()
         return stream_dbi.get_stream(before_time, unread_only)
+
+    def update_stream(self):
+        StreamDBI(self).update_stream()
+        self.save()
 
     def serialize(self):
         data = dict(self.__dict__)

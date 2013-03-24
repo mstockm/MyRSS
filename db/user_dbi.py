@@ -23,3 +23,6 @@ class UserDBI(object):
             return cursor.next()
         except:
             return None
+
+    def list(self):
+        return self._collection.find()

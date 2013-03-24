@@ -48,6 +48,7 @@ var toggleStarred = function(el) {
 }
 
 var rssHighlighted;
+var read = {}
 
 var rssHighlight = function(el) {
   if (rssHighlighted !== undefined) {
@@ -56,6 +57,11 @@ var rssHighlight = function(el) {
   rssHighlighted = el;
   rssHighlighted.css("border-color", "#00b4f5");
 
+  if (el.attr("data-item-id") in read) {
+    return false;
+  }
+
+  read[el.attr("data-item-id")] = true;
   var count = $("#unread-count");
   var new_count = parseInt(count.html()) - 1;
   if (new_count >= 0) {
@@ -123,7 +129,6 @@ $(window).on("scroll.read", function() {
   }
 });
 
-{% if stream %}
 // Infinite scroll
 var before = {{ before }};
 $("#more").hide();
@@ -184,7 +189,6 @@ $(window).on("scroll.inf", function() {
     loadMore(undefined);
   }
 });
-{% endif %}
 
 </script>
 {% endblock %}

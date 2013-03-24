@@ -1,6 +1,13 @@
-import sys, os
+import sys
+from os.path import (
+    join,
+    realpath,
+    dirname
+)
 
-sys.path.append(os.path.abspath('../..'))
+path = realpath(join(dirname(realpath(__file__)), '../..'))
+sys.path.append(path)
+
 
 from rss.models.user import User
 from pprint import pprint
